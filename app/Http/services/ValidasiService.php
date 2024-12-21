@@ -22,32 +22,8 @@ class ValidasiService
     public function getSkpDetail(string $uuid)
     {
         try {
-            $user = Auth::user(); // Mendapatkan user yang sedang login (atasan)
-            $targetUserId = Auth::id(); // ID user pegawai yang sedang login
-
             // Mendapatkan detail SKP beserta relasi yang terkait dengan filter berdasarkan user_id
             $skpDetail = Skp::where('uuid', $uuid)
-                ->with([
-                    // Relasi skpAtasan
-                    'skpAtasan' => function ($query) use ($user, $targetUserId) {
-                        $query->where('user_id', $user->id) // Filter berdasarkan user atasan
-                            ->with([
-                                'rencanaHasilKinerja' => function ($queryHasil) use ($targetUserId) {
-                                    $queryHasil->with([
-                                        'rencanaPegawai' => function ($queryPegawai) use ($targetUserId) {
-                                            $queryPegawai->where('user_id', $targetUserId) // Filter berdasarkan user_id pegawai
-                                                ->with('indikatorKinerja'); // Load indikator kinerja
-                                        },
-                                    ]);
-                                },
-                            ]);
-                    },
-                    // Relasi rencanaPegawai secara langsung
-                    'rencanaPegawai' => function ($query) use ($targetUserId) {
-                        $query->where('user_id', $targetUserId) // Filter berdasarkan user_id pegawai
-                            ->with('indikatorKinerja'); // Pastikan indikator kinerja ikut di-load
-                    },
-                ])
                 ->firstOrFail(); // Ambil data pertama atau gagal jika tidak ditemukan
 
             return $skpDetail;
@@ -55,7 +31,6 @@ class ValidasiService
             // Log error jika terjadi masalah
             Log::error('Gagal mendapatkan detail SKP untuk atasan', [
                 'uuid' => $uuid,
-                'user_id' => $user->id ?? null,
                 'error' => $e->getMessage(),
             ]);
             throw new \RuntimeException('Data SKP tidak ditemukan. Pastikan relasi dan data sudah sesuai.');

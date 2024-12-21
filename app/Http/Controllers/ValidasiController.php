@@ -44,7 +44,7 @@ class ValidasiController extends Controller
     {
         try {
             // Mendapatkan detail SKP
-            $skpDetail = $this->validasiService->getSkpDetail($uuid);
+            $skpDetail = Skp::where('uuid', $uuid)->firstOrFail();
 
             // Mendapatkan semua kategori perilaku yang memiliki perilakus
             $categories = CategoryPerilaku::with('perilakus')

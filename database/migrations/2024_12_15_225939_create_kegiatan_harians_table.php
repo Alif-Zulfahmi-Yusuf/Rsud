@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('rencana_pegawai_id')->constrained('rencana_hasil_kerja_pegawai')->onDelete('cascade');
             $table->foreignId('atasan_id')->constrained('atasans')->onDelete('cascade');
-            $table->foreignId('skp_id')->constrained('skps')->onDelete('cascade');
             $table->string('uraian');
             $table->enum('jenis_kegiatan', ['tugas_pokok', 'tugas_tambahan', 'dinas_luar', 'bebas_piket']);
             $table->string('output');

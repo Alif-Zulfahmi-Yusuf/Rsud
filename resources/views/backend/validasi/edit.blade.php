@@ -43,7 +43,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($skpDetail->skpAtasan->rencanaHasilKinerja ?? [] as $rencana)
+                        @foreach (\App\Models\RencanaHasilKinerja::where('skp_atasan_id', $skpDetail->skp_atasan_id)->get() ?? [] as $rencana)
                             <tr>
                                 <td class="align-middle text-center"
                                     rowspan="{{ $rencana->rencanaPegawai?->sum(fn($pegawai) => $pegawai->indikatorKinerja?->count()) ?? 1 }}">
@@ -53,11 +53,11 @@
                                     rowspan="{{ $rencana->rencanaPegawai?->sum(fn($pegawai) => $pegawai->indikatorKinerja?->count()) ?? 1 }}">
                                     {{ $rencana->rencana ?? 'Data Rencana Tidak Tersedia' }}
                                 </td>
-                                @foreach ($rencana->rencanaPegawai ?? [] as $pegawai)
+                                @foreach (\App\Models\RencanaHasilKinerjaPegawai::where('skp_id', $skpDetail->id)->get() ?? [] as $pegawai)
                                 <td class="align-middle" rowspan="{{ $pegawai->indikatorKinerja?->count() ?? 1 }}">
                                     {{ $pegawai->rencana ?? 'Data Rencana Pegawai Tidak Tersedia' }}
                                 </td>
-                                @foreach ($pegawai->indikatorKinerja ?? [] as $indikator)
+                                @foreach (\App\Models\IndikatorKinerja::where('skp_id', $skpDetail->id)->get() ?? [] as $indikator)
                                 @if (!$loop->first)
                             <tr>
                                 @endif
