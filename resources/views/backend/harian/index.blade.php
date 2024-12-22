@@ -75,20 +75,20 @@
                             <br>
                             {{ $kegiatan->user->nip }}
                         </td>
-                        <td class="text-center">{{ $kegiatan->user->pangkat->name }}</td>
-                        <td class="text-center">
+                        <td class="text-center align-middle">{{ $kegiatan->user->pangkat->name }}</td>
+                        <td class="text-center align-middle">
                             {{ $kegiatan->tanggal ? \Carbon\Carbon::parse($kegiatan->tanggal)->format('Y M d') : '-' }}
                         </td>
                         <td>{{ $kegiatan->uraian }}</td>
-                        <td class="text-center">{{ $kegiatan->jumlah }}</td>
-                        <td class="text-center">
+                        <td class="text-center align-middle">{{ $kegiatan->jumlah }}</td>
+                        <td class="text-center align-middle">
                             Rp {{ number_format((float) ($kegiatan->biaya ?? 0), 0, ',', '.') }}
-                        </td>
-                        <td class="text-center">
+                        </td> 
+                        <td class="text-center align-middle">
                             {{ \Carbon\Carbon::parse($kegiatan->waktu_mulai)->format('H:i') }} sd
                             {{ \Carbon\Carbon::parse($kegiatan->waktu_selesai)->format('H:i') }}
                         </td>
-                        <td class="text-center">
+                        <td class="text-center align-middle">
                             @if ($kegiatan->status == 'pending')
                             <span class="badge badge-phoenix badge-phoenix-warning">Pending</span>
                             @elseif ($kegiatan->status == 'approve')

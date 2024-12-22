@@ -43,21 +43,35 @@
                             </tr>
                         </thead>
                         <tbody>
-                        @foreach (\App\Models\RencanaHasilKinerja::where('skp_atasan_id', $skpDetail->skp_atasan_id)->get() ?? [] as $rencana)
+                            @foreach (\App\Models\RencanaHasilKinerja::where('skp_atasan_id', $skpDetail->skp_atasan_id)->get() ?? [] as $rencana)
+                            @php
+                            $pegawaiList = \App\Models\RencanaHasilKinerjaPegawai::where('skp_id', $skpDetail->id)
+                            ->where('rencana_atasan_id', $rencana->id)
+                            ->get();
+                            @endphp
+                            @foreach ($pegawaiList as $pegawai)
+                            @php
+                            $indikatorList = \App\Models\IndikatorKinerja::where('rencana_kerja_pegawai_id', $pegawai->id)->get();
+                            $rowspan = $indikatorList->count() ?: 1;
+                            @endphp
                             <tr>
-                                <td class="align-middle text-center"
-                                    rowspan="{{ $rencana->rencanaPegawai?->sum(fn($pegawai) => $pegawai->indikatorKinerja?->count()) ?? 1 }}">
-                                    {{ $loop->iteration }}
+                                {{-- Rencana Atasan --}}
+                                @if ($loop->parent->first && $loop->first)
+                                <td class="align-middle text-center" rowspan="{{ $pegawaiList->count() * $rowspan }}">
+                                    {{ $loop->parent->iteration }}
                                 </td>
-                                <td class="align-middle"
-                                    rowspan="{{ $rencana->rencanaPegawai?->sum(fn($pegawai) => $pegawai->indikatorKinerja?->count()) ?? 1 }}">
+                                <td class="align-middle" rowspan="{{ $pegawaiList->count() * $rowspan }}">
                                     {{ $rencana->rencana ?? 'Data Rencana Tidak Tersedia' }}
                                 </td>
-                                @foreach (\App\Models\RencanaHasilKinerjaPegawai::where('skp_id', $skpDetail->id)->get() ?? [] as $pegawai)
-                                <td class="align-middle" rowspan="{{ $pegawai->indikatorKinerja?->count() ?? 1 }}">
+                                @endif
+
+                                {{-- Rencana Pegawai --}}
+                                <td class="align-middle" rowspan="{{ $rowspan }}">
                                     {{ $pegawai->rencana ?? 'Data Rencana Pegawai Tidak Tersedia' }}
                                 </td>
-                                @foreach (\App\Models\IndikatorKinerja::where('skp_id', $skpDetail->id)->get() ?? [] as $indikator)
+
+                                {{-- Indikator Kinerja --}}
+                                @foreach ($indikatorList as $indikator)
                                 @if (!$loop->first)
                             <tr>
                                 @endif
@@ -69,9 +83,19 @@
                                 </td>
                             </tr>
                             @endforeach
-                            @endforeach
+
+                            {{-- Jika Tidak Ada Indikator Kinerja --}}
+                            @if ($indikatorList->isEmpty())
+                            <tr>
+                                <td class="align-middle text-center">-</td>
+                                <td>-</td>
+                                <td class="align-middle text-center">-</td>
                             </tr>
+                            @endif
                             @endforeach
+                            @endforeach
+                         
+
                         </tbody>
                     </table>
                 </div>
@@ -144,15 +168,14 @@
 <script src="https://cdn.datatables.net/rowgroup/1.3.1/js/dataTables.rowGroup.min.js"></script>
 
 <script>
-$(document).ready(function() {
-    @if(session('success'))
-    toastSuccess("{{ session('success') }}");
-    @endif
+    $(document).ready(function() {
+        @if(session('success'))
+        toastSuccess("{{ session('success') }}");
+        @endif
 
-    @if(session('error'))
-    toastError("{{ session('error') }}");
-    @endif
-});
+        @if(session('error'))
+        toastError("{{ session('error') }}");
+        @endif
+    });
 </script>
-
 @endpush

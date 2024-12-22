@@ -101,8 +101,8 @@ const editData = (uuid, tanggal, jenisKegiatan, uraian, rencanaPegawaiId, output
 
     // Format data jika diperlukan
     const formattedTanggal = new Date(tanggal).toISOString().split('T')[0]; // Format YYYY-MM-DD
-    const formattedWaktuMulai = waktuMulai ? waktuMulai : ''; // Default value
-    const formattedWaktuSelesai = waktuSelesai ? waktuSelesai : ''; // Default value
+    const formattedWaktuMulai = waktuMulai ? waktuMulai.slice(0, 5) : ''; // Ambil hanya HH:mm
+    const formattedWaktuSelesai = waktuSelesai ? waktuSelesai.slice(0, 5) : ''; // Ambil hanya HH:mm
 
     // Set nilai input modal
     $('#tanggal').val(formattedTanggal);
@@ -141,7 +141,6 @@ const editData = (uuid, tanggal, jenisKegiatan, uraian, rencanaPegawaiId, output
     // Tampilkan modal
     $('#editHarianModal').modal('show');
 };
-
 
 
 $(document).ready(function () {

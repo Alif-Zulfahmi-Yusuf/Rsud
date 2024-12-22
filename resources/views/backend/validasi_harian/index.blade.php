@@ -17,13 +17,17 @@
 @endpush
 
 @section('content')
-<div class="row gy-3 mb-6 justify-content-between">
-    <div class="col-md-9 col-auto">
+<div class="row gy-3 mb-6">
+    <!-- Judul -->
+    <div class="col-12 col-md-8">
         <h2 class="mb-2 text-body-emphasis">Review Realisasi Harian</h2>
     </div>
-    <div class="col-md-3 col-auto">
-        <form method="GET" action="{{ route('validasi-harian.index') }}" class="d-flex align-items-end">
-            <div class="me-2">
+
+    <!-- Form Filter -->
+    <div class="col-12 col-md-4">
+        <form method="GET" action="{{ route('validasi-harian.index') }}" class="d-flex flex-wrap align-items-end justify-content-end">
+            <!-- Filter Bulan -->
+            <div class="me-2 mb-2 flex-grow-1">
                 <select id="bulan" name="bulan" class="form-control">
                     <option value="">Semua Bulan</option>
                     <option value="01" {{ request('bulan') == '01' ? 'selected' : '' }}>Januari</option>
@@ -38,10 +42,11 @@
                     <option value="10" {{ request('bulan') == '10' ? 'selected' : '' }}>Oktober</option>
                     <option value="11" {{ request('bulan') == '11' ? 'selected' : '' }}>November</option>
                     <option value="12" {{ request('bulan') == '12' ? 'selected' : '' }}>Desember</option>
-                    <!-- Tambahkan bulan lainnya -->
                 </select>
             </div>
-            <div class="me-2">
+
+            <!-- Filter Tahun -->
+            <div class="me-2 mb-2 flex-grow-1">
                 <select id="tahun" name="tahun" class="form-control">
                     <option value="">Semua Tahun</option>
                     @for ($i = now()->year; $i >= now()->year - 5; $i--)
@@ -49,10 +54,15 @@
                     @endfor
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary">Filter</button>
+
+            <!-- Tombol Filter -->
+            <div class="mb-2">
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </div>
         </form>
     </div>
 </div>
+
 
 <div class="container">
     <div class="card shadow rounded-lg mb-4">
@@ -208,7 +218,7 @@ function editDataHarianByUser(userId) {
                         <td class="text-center">${item.output}</td>
                         <td class="text-center">${item.waktu_mulai} - ${item.waktu_selesai}</td>
                         <td class="text-center">
-                            <a href="${item.evidence}" target="_blank" class="btn btn-link btn-sm">Lihat File</a>
+                            <a href="storage/${item.evidence}" target="_blank" class="btn btn-link btn-sm">Lihat File</a>
                         </td>
                         <td class="text-center">
                             <select class="form-select penilaian-select" name="penilaian[${item.id}]">
