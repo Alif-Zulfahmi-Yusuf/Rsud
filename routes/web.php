@@ -49,7 +49,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::delete('/skp_atasan/destroy/{uuid}', [SkpAtasanController::class, 'destroy'])->name('skp_atasan.destroy');
 
     // bagian Rencana Kerja Atasan
-    Route::put('/rencana-kerja/{uuid}', [RencanaKerjaController::class, 'update'])->name('rencana-kerja.update');
+    Route::put('/rencana-kerja/{uuid}/update', [RencanaKerjaController::class, 'update'])->name('rencana-kerja.update');
     Route::resource('rencana-kerja', RencanaKerjaController::class);
     Route::delete('/rencana-kerja/destroy/{uuid}', [RencanaKerjaController::class, 'destroy'])->name('rencana-kerja.destroy');
 

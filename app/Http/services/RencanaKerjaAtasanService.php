@@ -53,7 +53,6 @@ class RencanaKerjaAtasanService
     }
 
 
-
     public function delete($uuid)
     {
         $rencana = RencanaHasilKinerja::where('uuid', $uuid)->firstOrFail();

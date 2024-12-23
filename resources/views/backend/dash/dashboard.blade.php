@@ -8,11 +8,6 @@
 
 @push('css')
 <style>
-.echart-basic-bar-chart-example {
-    width: 100%;
-    min-height: 350px;
-}
-
 .profile-img {
     width: 120px;
     height: 120px;
@@ -88,7 +83,7 @@
                     <h6 class="m-0">Rating Kinerja Bulanan</h6>
                 </div>
                 <div class="card-body">
-                    <div class="echart-basic-bar-chart-example"></div>
+                    <div class="echart-basic-bar-chart-example" style="min-height:350px"></div>
                 </div>
             </div>
         </div>

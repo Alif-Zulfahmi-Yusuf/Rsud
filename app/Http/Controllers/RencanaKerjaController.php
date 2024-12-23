@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use App\Models\RencanaHasilKinerja;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Casts\Json;
 use App\Http\Services\RencanaKerjaAtasanService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -27,7 +29,7 @@ class RencanaKerjaController extends Controller
     {
         // Validasi data dari form
         $validated = $request->validate([
-            'rencana_hasil_kerja' => 'required|string|max:255',
+            'rencana' => 'required|string|max:255|unique:rencana_hasil_kerja',
         ]);
 
         try {
@@ -42,47 +44,27 @@ class RencanaKerjaController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, $uuid)
     {
-
-
         $data = $request->validate([
-            'rencana' => 'required|string|max:255',
+            'rencana' => 'required|string|max:255|unique:rencana_hasil_kerja,rencana,' . $uuid,
         ]);
 
         try {
-
             $this->rencanaKerjaatasanService->update($uuid, $data);
 
-            // Redirect ke halaman index atau halaman sukses lainnya
-            return back()->with('success', 'Rencana Hasil Kerja berhasil disimpan.');
+            return response()->json(['message' => 'Rencana berhasil diperbarui.']);
         } catch (ModelNotFoundException $e) {
-
-            return back()->with('error', 'Rencana Hasil Kerja tidak ditemukan.');
+            return response()->json(['message' => 'Rencana tidak ditemukan.'], 404);
         } catch (\Exception $e) {
-            // Tangani error jika terjadi kesalahan
-            return back()->with('error', $e->getMessage()); // Hanya kirim string error
+            return response()->json(['message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
         }
     }
+
 
     /**
      * Remove the specified resource from storage.

@@ -1647,7 +1647,14 @@
         },
         legend: {
           data: ['Hasil Kerja', 'Perilaku Kerja'],
-          textStyle: { color: getColor('quaternary-color') }
+          textStyle: { color: getColor('quaternary-color') },
+          top: 10 // Posisi legend di atas grafik
+        },
+        grid: {
+          left: '15%',
+          right: '15%',
+          bottom: '20%',
+          top: '20%'
         },
         xAxis: {
           type: 'category',
@@ -1672,29 +1679,22 @@
             name: 'Hasil Kerja',
             type: 'bar',
             data: mapToCategoryIndex(hasilKerjaData),
-            barWidth: '40%',
+            barWidth: '35%',
             itemStyle: { color: getColor('primary') }
           },
           {
             name: 'Perilaku Kerja',
             type: 'bar',
             data: mapToCategoryIndex(perilakuKerjaData),
-            barWidth: '40%',
+            barWidth: '35%',
             itemStyle: { color: getColor('success') }
           }
-        ],
-        grid: {
-          left: '10%',
-          right: '10%',
-          bottom: '10%',
-          top: '15%'
-        }
+        ]
       });
 
       echartSetOption(chart, userOptions, getDefaultOptions);
     }
   };
-
 
 
 

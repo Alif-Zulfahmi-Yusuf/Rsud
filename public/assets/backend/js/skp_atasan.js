@@ -147,43 +147,7 @@ const removeRowFromTable = (uuid) => {
 }
 
 
-const openEditIndikatorModal = (uuid, rencana) => {
-    $('#edit_rencana_hasil_kerja_id').val(uuid);
-    $('#edit_rencana_hasil_kerja').val(rencana);
 
-
-
-    $('#modalEdit').modal('show');
-};
-
-
-$('#formEditRencana').submit(function (e) {
-    e.preventDefault();
-
-    const uuid = $('#edit_rencana_hasil_kerja_id').val();
-    const rencana = $('#edit_rencana_hasil_kerja').val();
-
-    console.log(`UUID: ${uuid}`);
-
-    $.ajax({
-        type: "PUT",
-        url: `/rencana-kerja/${uuid}/update`, // Hapus "/update" agar sesuai dengan rute
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        data: {
-            rencana: rencana
-        },
-        success: function (response) {
-            toastSuccess(response.message);
-            $('#modalEdit').modal('hide');
-            location.reload();
-        },
-        error: function (xhr) {
-            toastError(xhr.responseJSON.message);
-        }
-    });
-});
 
 
 const deleteDataRencana = (e) => {
@@ -260,3 +224,5 @@ const removeRowFromTableRencana = (uuid) => {
     });
     table.draw();  // Redraw DataTable untuk memperbarui tampilan
 }
+
+

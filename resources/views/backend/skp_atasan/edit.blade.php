@@ -94,10 +94,12 @@
 </form>
 @endsection
 
-<!-- modal edit -->
-<form action="{{ isset($rencana) ? route('rencana-kerja.update', $rencana->uuid) : '#' }}" method="POST">
+
+<!-- Modal Edit -->
+<form id="formEditRencana">
     @csrf
     @method('PUT')
+    <!-- Laravel membutuhkan method PUT untuk update -->
     <div class="modal fade" id="modalEdit" tabindex="-1" data-bs-backdrop="static" aria-labelledby="editSkpModalLabel"
         aria-hidden="true">
         <div class="modal-dialog">
@@ -107,7 +109,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" name="rencana_hasil_kerja_id" id="edit_rencana_hasil_kerja_id">
+                    <input type="hidden" name="uuid" id="edit_rencana_hasil_kerja_id">
 
                     <div class="form-group mb-3">
                         <label for="edit_rencana_hasil_kerja" class="form-label">Rencana Hasil Kerja</label>
@@ -120,7 +122,8 @@
     </div>
 </form>
 
-<!-- @include('backend.skp_atasan._modalEdit') -->
+
+
 @include('backend.skp_atasan._modalRencana')
 
 @push('js')
@@ -143,5 +146,56 @@ toastError({
     message: "{{ session('error') }}", // Mengirim string error
 });
 @endif
+
+const openEditIndikatorModal = (uuid, rencana) => {
+    $('#edit_rencana_hasil_kerja_id').val(uuid);
+    $('#edit_rencana_hasil_kerja').val(rencana);
+
+
+
+    $('#modalEdit').modal('show');
+};
+
+
+$('#formEditRencana').submit(function(e) {
+    e.preventDefault(); // Mencegah form submit default
+
+    // Ambil nilai input dari form
+    const uuid = $('#edit_rencana_hasil_kerja_id').val();
+    const rencana = $('#edit_rencana_hasil_kerja').val();
+
+    console.log(`UUID: ${uuid}, Rencana: ${rencana}`); // Debugging
+
+    // Validasi sederhana sebelum AJAX
+    if (!uuid || !rencana) {
+        toastError('Harap isi semua data sebelum mengupdate.');
+        return;
+    }
+
+    // Proses AJAX untuk update data
+    $.ajax({
+        type: "PUT",
+        url: `/rencana-kerja/${uuid}`, // Pastikan URL sesuai dengan route Laravel Anda
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Tambahkan CSRF token
+        },
+        data: {
+            rencana: rencana
+        },
+        success: function(response) {
+            console.log('Success Response:', response); // Debugging respons server
+            toastSuccess(response.message ||
+            'Rencana berhasil diperbarui.'); // Tampilkan pesan sukses
+            $('#modalEdit').modal('hide'); // Tutup modal
+            location.reload(); // Reload halaman untuk memperbarui tampilan
+        },
+        error: function(xhr) {
+            console.error('Error Response:', xhr); // Debugging error dari server
+            const errorMessage = xhr.responseJSON?.message ||
+                'Terjadi kesalahan saat mengupdate rencana.';
+            toastError(errorMessage); // Tampilkan pesan error
+        }
+    });
+});
 </script>
 @endpush
