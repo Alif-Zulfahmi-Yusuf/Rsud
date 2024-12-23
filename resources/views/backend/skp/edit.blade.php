@@ -223,8 +223,13 @@
                                 </td>
                                 <td class="align-middle" width="45%">
                                     <h6 class="fw-bold mb-2">Ekspektasi Khusus Pimpinan/Leader:</h6>
-                                    <textarea class="form-control" rows="3" placeholder="Masukkan ekspektasi..."
-                                        readonly></textarea>
+                                    @php
+                                    // Cari ekspektasi berdasarkan category_id
+                                    $ekspetasi = $ekspektasis->firstWhere('category_id', $category->id);
+                                    @endphp
+                                    <textarea class="form-control" rows="3" readonly>
+                                    {{ $ekspetasi->ekspetasi ?? 'Ekspektasi belum diinputkan.' }}
+                                    </textarea>
                                 </td>
                             </tr>
                             @endforeach

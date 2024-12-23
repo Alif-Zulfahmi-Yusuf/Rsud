@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Skp;
+use App\Models\Ekspetasi;
 use Illuminate\Http\Request;
 use App\Models\CategoryPerilaku;
 use Illuminate\Support\Facades\Log;
@@ -83,10 +84,11 @@ class ValidasiController extends Controller
     public function update(Request $request, string $uuid)
     {
         try {
-
             // Validasi input
             $request->validate([
                 'keterangan_revisi' => 'nullable|string|max:500',
+                'ekspektasi' => 'array', // Validasi ekspektasi sebagai array
+                'ekspektasi.*' => 'nullable|string|max:500', // Validasi tiap ekspektasi
             ]);
 
             // Temukan SKP berdasarkan UUID
@@ -104,6 +106,23 @@ class ValidasiController extends Controller
 
             $skp->save();
 
+            // Simpan ekspektasi ke tabel ekspetasis
+            if ($request->has('ekspektasi')) {
+                foreach ($request->input('ekspektasi') as $categoryId => $ekspetasi) {
+                    if (!empty($ekspetasi)) {
+                        Ekspetasi::updateOrCreate(
+                            [
+                                'skp_id' => $skp->id,
+                                'category_id' => $categoryId,
+                            ],
+                            [
+                                'ekspetasi' => $ekspetasi,
+                            ]
+                        );
+                    }
+                }
+            }
+
             return redirect()->route('validasi.index')->with('success', 'Review SKP berhasil diperbarui.');
         } catch (\Exception $e) {
             // Log error untuk debugging
@@ -111,9 +130,10 @@ class ValidasiController extends Controller
                 'uuid' => $uuid,
                 'error' => $e->getMessage(),
             ]);
-            return redirect()->back()->with('error', $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal memperbarui SKP: ' . $e->getMessage());
         }
     }
+
 
 
     /**

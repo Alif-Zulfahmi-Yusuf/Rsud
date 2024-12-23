@@ -28,53 +28,55 @@
     @csrf
     @method('PUT')
     <div class="container">
+        <!-- Tabel Utama -->
         <div class="card shadow rounded-lg mb-4">
             <div class="card-body">
                 <div class="table-responsive">
                     <table id="tableReview" class="table table-bordered table-sm fs-8 mb-0">
                         <thead class="table-dark">
                             <tr>
-                                <th width="2%" class="text-center">No</th>
-                                <th width="25%">Rencana Hasil Kerja Pimpinan yang Diintervensi</th>
+                                <th class="text-center" width="5%">No</th>
+                                <th width="20%">Rencana Hasil Kerja Pimpinan</th>
                                 <th width="20%">Rencana Hasil Kerja</th>
-                                <th class="text-center" width="5%">Aspek</th>
-                                <th width="25%">Indikator Kinerja Individu</th>
+                                <th class="text-center" width="7%">Aspek</th>
+                                <th width="30%">Indikator Kinerja Individu</th>
                                 <th class="text-center" width="5%">Target</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (\App\Models\RencanaHasilKinerja::where('skp_atasan_id', $skpDetail->skp_atasan_id)->get() ?? [] as $rencana)
+                            @foreach (\App\Models\RencanaHasilKinerja::where('skp_atasan_id',
+                            $skpDetail->skp_atasan_id)->get() ?? [] as $rencana)
                             @php
                             $pegawaiList = \App\Models\RencanaHasilKinerjaPegawai::where('skp_id', $skpDetail->id)
                             ->where('rencana_atasan_id', $rencana->id)
                             ->get();
                             @endphp
+
                             @foreach ($pegawaiList as $pegawai)
                             @php
-                            $indikatorList = \App\Models\IndikatorKinerja::where('rencana_kerja_pegawai_id', $pegawai->id)->get();
-                            $rowspan = $indikatorList->count() ?: 1;
+                            $indikatorList = \App\Models\IndikatorKinerja::where('rencana_kerja_pegawai_id',
+                            $pegawai->id)->get();
+                            $rowspanIndikator = $indikatorList->count() ?: 1;
                             @endphp
+
+                            @foreach ($indikatorList as $indikator)
                             <tr>
-                                {{-- Rencana Atasan --}}
                                 @if ($loop->parent->first && $loop->first)
-                                <td class="align-middle text-center" rowspan="{{ $pegawaiList->count() * $rowspan }}">
+                                <td class="align-middle text-center"
+                                    rowspan="{{ $pegawaiList->count() * $rowspanIndikator }}">
                                     {{ $loop->parent->iteration }}
                                 </td>
-                                <td class="align-middle" rowspan="{{ $pegawaiList->count() * $rowspan }}">
-                                    {{ $rencana->rencana ?? 'Data Rencana Tidak Tersedia' }}
+                                <td class="align-middle" rowspan="{{ $pegawaiList->count() * $rowspanIndikator }}">
+                                    {{ $rencana->rencana ?? 'Data Tidak Tersedia' }}
                                 </td>
                                 @endif
 
-                                {{-- Rencana Pegawai --}}
-                                <td class="align-middle" rowspan="{{ $rowspan }}">
-                                    {{ $pegawai->rencana ?? 'Data Rencana Pegawai Tidak Tersedia' }}
+                                @if ($loop->first)
+                                <td class="align-middle" rowspan="{{ $rowspanIndikator }}">
+                                    {{ $pegawai->rencana ?? 'Data Tidak Tersedia' }}
                                 </td>
-
-                                {{-- Indikator Kinerja --}}
-                                @foreach ($indikatorList as $indikator)
-                                @if (!$loop->first)
-                            <tr>
                                 @endif
+
                                 <td class="align-middle text-center">{{ $indikator->aspek ?? '-' }}</td>
                                 <td>{{ $indikator->indikator_kinerja ?? '-' }}</td>
                                 <td class="align-middle text-center">
@@ -84,9 +86,13 @@
                             </tr>
                             @endforeach
 
-                            {{-- Jika Tidak Ada Indikator Kinerja --}}
                             @if ($indikatorList->isEmpty())
                             <tr>
+                                @if ($loop->first)
+                                <td class="align-middle" rowspan="1">
+                                    {{ $pegawai->rencana ?? 'Data Tidak Tersedia' }}
+                                </td>
+                                @endif
                                 <td class="align-middle text-center">-</td>
                                 <td>-</td>
                                 <td class="align-middle text-center">-</td>
@@ -94,13 +100,13 @@
                             @endif
                             @endforeach
                             @endforeach
-                         
-
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
+
+        <!-- Tabel Perilaku Kerja -->
         <div class="card shadow rounded-lg mb-4">
             <div class="card-body">
                 <h5 class="mb-5">Perilaku Kerja (BerAKHLAK)</h5>
@@ -119,7 +125,7 @@
                             <tr>
                                 <td class="text-center align-middle" width="5%">{{ $loop->iteration }}</td>
                                 <td class="align-middle" width="50%">
-                                    <h6 class="fw-bold mb-2">Ukuran Keberhasilan/Indikator Kinerja dan Target:</h6>
+                                    <h6 class="fw-bold mb-2">Ukuran Keberhasilan/Indikator Kinerja:</h6>
                                     <ul class="mb-0">
                                         @foreach ($category->perilakus as $perilaku)
                                         <li>{{ $perilaku->name }}</li>
@@ -127,18 +133,19 @@
                                     </ul>
                                 </td>
                                 <td class="align-middle" width="45%">
-                                    <h6 class="fw-bold mb-2">Ekspektasi Khusus Pimpinan/Leader:</h6>
-                                    <textarea class="form-control" rows="3"
+                                    <h6 class="fw-bold mb-2">Ekspektasi Khusus Pimpinan:</h6>
+                                    <textarea class="form-control" name="ekspektasi[{{ $category->id }}]" rows="3"
                                         placeholder="Masukkan ekspektasi..."></textarea>
                                 </td>
                             </tr>
-
                             @endforeach
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
+
+        <!-- Catatan dan Aksi -->
         <div class="card">
             <div class="card-body">
                 <h5 class="mb-5">Catatan</h5>
@@ -155,6 +162,7 @@
     </div>
 </form>
 
+
 @endsection
 
 @push('js')
@@ -168,14 +176,14 @@
 <script src="https://cdn.datatables.net/rowgroup/1.3.1/js/dataTables.rowGroup.min.js"></script>
 
 <script>
-    $(document).ready(function() {
-        @if(session('success'))
-        toastSuccess("{{ session('success') }}");
-        @endif
+$(document).ready(function() {
+    @if(session('success'))
+    toastSuccess("{{ session('success') }}");
+    @endif
 
-        @if(session('error'))
-        toastError("{{ session('error') }}");
-        @endif
-    });
+    @if(session('error'))
+    toastError("{{ session('error') }}");
+    @endif
+});
 </script>
 @endpush

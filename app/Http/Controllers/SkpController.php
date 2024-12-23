@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Skp;
 use App\Models\Perilaku;
+use App\Models\Ekspetasi;
 use App\Models\SkpAtasan;
 use Illuminate\Http\Request;
 use App\Models\CategoryPerilaku;
@@ -74,8 +75,11 @@ class SkpController extends Controller
                 ->whereHas('perilakus') // Hanya ambil kategori yang memiliki perilakus
                 ->get();
 
-            // Menampilkan view edit dengan data SKP dan kategori perilaku
-            return view('backend.skp.edit', compact('skpDetail', 'categories'));
+            // Mendapatkan data ekspektasi berdasarkan skp_id
+            $ekspektasis = Ekspetasi::where('skp_id', $skpDetail->id)->get();
+
+            // Menampilkan view edit dengan data SKP, kategori perilaku, dan ekspektasi
+            return view('backend.skp.edit', compact('skpDetail', 'categories', 'ekspektasis'));
         } catch (\RuntimeException $e) {
             // Log error jika data tidak ditemukan
             Log::error('Gagal menampilkan data SKP untuk edit', [
@@ -86,6 +90,7 @@ class SkpController extends Controller
             abort(404, $e->getMessage());
         }
     }
+
 
 
     /**

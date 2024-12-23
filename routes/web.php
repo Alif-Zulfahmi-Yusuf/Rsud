@@ -40,7 +40,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('atasans', AtasanController::class);
     Route::delete('/atasans/destroy/{uuid}', [AtasanController::class, 'destroy'])->name('atasans.destroy');
 
-
     // bagian skp
     Route::resource('skp', SkpController::class);
     Route::delete('/skp/destroy/{uuid}', [SkpController::class, 'destroy'])->name('skp.destroy');
