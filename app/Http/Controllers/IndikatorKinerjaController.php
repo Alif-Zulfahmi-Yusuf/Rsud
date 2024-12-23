@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\IndikatorKinerja;
 use Illuminate\Support\Facades\Log;
 use App\Http\Services\IndikatorService;
 use App\Http\Requests\IndikatorKinerjaRequest;
-use App\Models\IndikatorKinerja;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class IndikatorKinerjaController extends Controller
 {
@@ -62,33 +63,26 @@ class IndikatorKinerjaController extends Controller
 
     public function update(Request $request, $uuid)
     {
+        $data = $request->validate([
+            'rencana_kerja_pegawai_id' => 'required|exists:rencana_hasil_kerja_pegawai,id',
+            'aspek' => 'required|string|max:255',
+            'indikator_kinerja' => 'required|string',
+            'tipe_target' => 'required|string',
+            'target_minimum' => 'required|numeric',
+            'target_maksimum' => 'nullable|numeric',
+            'satuan' => 'required|string|max:255',
+            'report' => 'nullable|string',
+        ]);
+
         try {
-            $data = $request->validate([
-                'rencana_kerja_pegawai_id' => 'required|exists:rencana_hasil_kerja_pegawai,id',
-                'aspek' => 'required|string|max:255',
-                'indikator_kinerja' => 'required|string',
-                'tipe_target' => 'required|string',
-                'target_minimum' => 'required|numeric',
-                'target_maksimum' => 'nullable|numeric',
-                'satuan' => 'required|string|max:255',
-                'report' => 'nullable|string',
-            ]);
 
-            $indikator = IndikatorKinerja::where('uuid', $uuid)->first();
+            $this->indikatorService->update($uuid, $data);
 
-            if (!$indikator) {
-                throw new \Exception('Indikator Kinerja tidak ditemukan.');
-            }
-
-            $indikator->update($data);
-
-            return redirect()->back()->with('success', 'Indikator Kinerja berhasil diperbarui.');
+            return response()->json(['message' => 'Indikator berhasil diperbarui.']);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'Indikator tidak ditemukan.'], 404);
         } catch (\Exception $e) {
-            Log::error('Gagal memperbarui Indikator Kinerja', [
-                'error' => $e->getMessage(),
-            ]);
-
-            return redirect()->back()->with('error', $e->getMessage());
+            return response()->json(['message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
         }
     }
 

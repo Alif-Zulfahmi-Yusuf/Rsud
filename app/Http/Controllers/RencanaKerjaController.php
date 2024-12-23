@@ -27,12 +27,11 @@ class RencanaKerjaController extends Controller
      */
     public function store(Request $request)
     {
-        // Validasi data dari form
-        $validated = $request->validate([
-            'rencana' => 'required|string|max:255|unique:rencana_hasil_kerja',
-        ]);
-
         try {
+            // Validasi data dari form
+            $validated = $request->validate([
+                'rencana' => 'required|string|max:255|unique:rencana_hasil_kerja',
+            ]);
             // Simpan data menggunakan service
             $this->rencanaKerjaatasanService->store($validated);
 

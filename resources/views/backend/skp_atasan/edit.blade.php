@@ -147,6 +147,7 @@ toastError({
 });
 @endif
 
+
 const openEditIndikatorModal = (uuid, rencana) => {
     $('#edit_rencana_hasil_kerja_id').val(uuid);
     $('#edit_rencana_hasil_kerja').val(rencana);
@@ -185,7 +186,7 @@ $('#formEditRencana').submit(function(e) {
         success: function(response) {
             console.log('Success Response:', response); // Debugging respons server
             toastSuccess(response.message ||
-            'Rencana berhasil diperbarui.'); // Tampilkan pesan sukses
+                'Rencana berhasil diperbarui.'); // Tampilkan pesan sukses
             $('#modalEdit').modal('hide'); // Tutup modal
             location.reload(); // Reload halaman untuk memperbarui tampilan
         },

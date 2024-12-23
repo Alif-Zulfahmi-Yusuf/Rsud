@@ -265,7 +265,7 @@
                     <span class="badge bg-danger text-white">Revisi</span>
                 </div>
                 <p class="mb-2">
-                    {{ $skpDetail->atasan->name ?? 'Data Atasan Tidak Tersedia' }}
+                    {{ Auth::user()->atasan->name ?? 'Data Atasan Tidak Tersedia' }}
                 </p>
                 <p class="mb-0">
                     <strong>Keterangan Revisi:</strong><br>
@@ -281,8 +281,7 @@
 @endsection
 
 // Modal Edit Indikator
-<form action="{{ isset($indikator) ? route('indikator-kinerja.update', $indikator->uuid ?? '') : '#' }}" method="post">
-
+<form id="formEditIndikator">
     @csrf
     @method('PUT')
     <div class="modal fade" id="modalEditIndikator" tabindex="-1" data-bs-backdrop="static"
@@ -294,7 +293,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" name="indikator_id" id="editIndikatorId">
+                    <input type="hidden" name="uuid" id="editIndikatorId">
 
                     <div class="form-group mb-3">
                         <label for="editRencanaPegawai" class="form-label">Rencana Pegawai</label>
@@ -423,6 +422,68 @@ function confirmSubmit() {
         }
     });
 }
+
+const openEditIndikatorModal = (uuid, rencanaPegawaiId, aspek, indikatorKinerja, tipeTarget, targetMinimum,
+    targetMaximum, satuan, report) => {
+    console.log(`UUID indikator: ${uuid}`); // Menampilkan UUID indikator di console untuk verifikasi
+    // Isi data ke dalam form edit
+    $('#edit-uuid').val(uuid);
+    $('#editRencanaPegawai').val(rencanaPegawaiId);
+    $('#editAspek').val(aspek);
+    $('#editIndikatorKinerja').val(indikatorKinerja);
+    $('#editTipeTarget').val(tipeTarget);
+    $('#editTargetMinimum').val(targetMinimum);
+    $('#editTargetMaximum').val(targetMaximum);
+    $('#editSatuan').val(satuan);
+    $('#editReport').val(report);
+
+    // Tampilkan modal
+    $('#modalEditIndikator').modal('show');
+};
+
+// Menangani pengiriman form edit
+$('#formEditIndikator').submit(function(e) {
+    e.preventDefault();
+
+    const uuid = $('#edit-uuid').val();
+    const rencanaPegawaiId = $('#editRencanaPegawai').val();
+    const aspek = $('#editAspek').val();
+    const indikatorKinerja = $('#editIndikatorKinerja').val();
+    const tipeTarget = $('#editTipeTarget').val();
+    const targetMinimum = $('#editTargetMinimum').val();
+    const targetMaximum = $('#editTargetMaximum').val();
+    const satuan = $('#editSatuan').val();
+    const report = $('#editReport').val();
+
+    console.log(`UUID indikator: ${uuid}`);
+
+    $.ajax({
+        type: "PUT", // Ganti dengan PUT sesuai resource Laravel
+        url: `/indikator-kinerja/${uuid}/update`, // Gunakan UUID di URL
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        data: {
+            rencana_kerja_pegawai_id: rencanaPegawaiId,
+            aspek: aspek,
+            indikator_kinerja: indikatorKinerja,
+            tipe_target: tipeTarget,
+            target_minimum: targetMinimum,
+            target_maksimum: targetMaximum,
+            satuan: satuan,
+            report: report
+        },
+        success: function(response) {
+            toastSuccess(response.message);
+            $('#modalEditIndikator').modal('hide');
+            location.reload();
+        },
+        error: function(xhr) {
+            toastError(xhr.responseJSON.message);
+        }
+    });
+
+});
 </script>
 
 @endpush

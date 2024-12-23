@@ -256,68 +256,6 @@ const removeRowFromTableIndikator = (uuid) => {
 
 
 
-const openEditIndikatorModal = (uuid, rencanaPegawaiId, aspek, indikatorKinerja, tipeTarget, targetMinimum, targetMaximum, satuan, report) => {
-    console.log(`UUID indikator: ${uuid}`); // Menampilkan UUID indikator di console untuk verifikasi
-    // Isi data ke dalam form edit
-    $('#edit-uuid').val(uuid);
-    $('#editRencanaPegawai').val(rencanaPegawaiId);
-    $('#editAspek').val(aspek);
-    $('#editIndikatorKinerja').val(indikatorKinerja);
-    $('#editTipeTarget').val(tipeTarget);
-    $('#editTargetMinimum').val(targetMinimum);
-    $('#editTargetMaximum').val(targetMaximum);
-    $('#editSatuan').val(satuan);
-    $('#editReport').val(report);
-
-    // Tampilkan modal
-    $('#modalEditIndikator').modal('show');
-};
-
-
-// Menangani pengiriman form edit
-$('#formEditIndikator').submit(function (e) {
-    e.preventDefault();
-
-    const uuid = $('#edit-uuid').val();
-    const rencanaPegawaiId = $('#editRencanaPegawai').val();
-    const aspek = $('#editAspek').val();
-    const indikatorKinerja = $('#editIndikatorKinerja').val();
-    const tipeTarget = $('#editTipeTarget').val();
-    const targetMinimum = $('#editTargetMinimum').val();
-    const targetMaximum = $('#editTargetMaximum').val();
-    const satuan = $('#editSatuan').val();
-    const report = $('#editReport').val();
-
-    console.log(`UUID indikator: ${uuid}`);
-
-    $.ajax({
-        type: "PUT", // Ganti dengan PUT sesuai resource Laravel
-        url: `/indikator-kinerja/${uuid}/update`, // Gunakan UUID di URL
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        data: {
-            rencana_kerja_pegawai_id: rencanaPegawaiId,
-            aspek: aspek,
-            indikator_kinerja: indikatorKinerja,
-            tipe_target: tipeTarget,
-            target_minimum: targetMinimum,
-            target_maksimum: targetMaximum,
-            satuan: satuan,
-            report: report
-        },
-        success: function (response) {
-            toastSuccess(response.message);
-            $('#modalEditIndikator').modal('hide');
-            location.reload();
-        },
-        error: function (xhr) {
-            toastError(xhr.responseJSON.message);
-        }
-    });
-
-});
-
 $(document).ready(function () {
     $('#skp_year').select2({
         theme: "bootstrap-5",

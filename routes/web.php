@@ -58,7 +58,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 
     // bagian indikator
-    Route::put('/indikator-kinerja/{uuid}', [IndikatorKinerjaController::class, 'update'])->name('indikator-kinerja.update');
+    Route::put('/indikator-kinerja/{uuid}/update', [IndikatorKinerjaController::class, 'update'])->name('indikator-kinerja.update');
     Route::resource('indikator-kinerja', IndikatorKinerjaController::class);
     Route::delete('/indikator-kinerja/destroy/{uuid}', [IndikatorKinerjaController::class, 'destroy'])->name('indikator-kinerja.destroy');
 
