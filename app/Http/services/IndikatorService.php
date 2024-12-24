@@ -74,13 +74,23 @@ class IndikatorService
         }
     }
 
-    public function update(string $uuid)
+    public function update(string $uuid, array $data)
     {
-
+        // Cari data indikator berdasarkan UUID
         $indikator = IndikatorKinerja::where('uuid', $uuid)->first();
 
+        // Jika data tidak ditemukan, lempar exception
+        if (!$indikator) {
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException('Indikator tidak ditemukan.');
+        }
+
+        // Update data indikator dengan data baru
+        $indikator->update($data);
+
+        // Return data indikator yang diperbarui
         return $indikator;
     }
+
 
     public function delete($uuid)
     {

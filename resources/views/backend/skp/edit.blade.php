@@ -172,10 +172,20 @@
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-end py-2">
                                         <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                            data-bs-target="#modalEditIndikator"
-                                            onclick="openEditIndikatorModal('{{ $indikator->uuid }}', '{{ $indikator->rencana_kerja_pegawai_id }}', '{{ $indikator->aspek }}', '{{ $indikator->indikator_kinerja }}', '{{ $indikator->tipe_target }}', '{{ $indikator->target_minimum }}', '{{ $indikator->target_maksimum }}', '{{ $indikator->satuan }}', '{{ $indikator->report }}')">
+                                            data-bs-target="#modalEditIndikator" onclick="openEditIndikatorModal(
+                                                '{{ $indikator->uuid }}',
+                                                '{{ $indikator->rencana_kerja_pegawai_id }}',
+                                                '{{ e($indikator->aspek) }}',
+                                                '{{ e($indikator->indikator_kinerja) }}',
+                                                '{{ e($indikator->tipe_target) }}',
+                                                '{{ $indikator->target_minimum }}',
+                                                '{{ $indikator->target_maksimum }}',
+                                                '{{ e($indikator->satuan) }}',
+                                                '{{ e($indikator->report) }}'
+                                            )">
                                             Edit
                                         </a>
+
                                         <div class="dropdown-divider"></div>
                                         <button type="button" class="dropdown-item text-danger delete-button"
                                             onclick="deleteDataIndikator(this)"
@@ -293,7 +303,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" name="uuid" id="editIndikatorId">
+                    <input type="hidden" name="uuid" id="edit-uuid">
+                    <!-- Ubah id menjadi sesuai dengan yang digunakan di JS -->
+
 
                     <div class="form-group mb-3">
                         <label for="editRencanaPegawai" class="form-label">Rencana Pegawai</label>
@@ -441,10 +453,12 @@ const openEditIndikatorModal = (uuid, rencanaPegawaiId, aspek, indikatorKinerja,
     $('#modalEditIndikator').modal('show');
 };
 
-// Menangani pengiriman form edit
-$('#formEditIndikator').submit(function(e) {
-    e.preventDefault();
 
+// Fungsi untuk menangani form submit edit indikator
+$('#formEditIndikator').submit(function(e) {
+    e.preventDefault(); // Mencegah perilaku default submit form
+
+    // Ambil data dari form
     const uuid = $('#edit-uuid').val();
     const rencanaPegawaiId = $('#editRencanaPegawai').val();
     const aspek = $('#editAspek').val();
@@ -455,13 +469,20 @@ $('#formEditIndikator').submit(function(e) {
     const satuan = $('#editSatuan').val();
     const report = $('#editReport').val();
 
-    console.log(`UUID indikator: ${uuid}`);
+    console.log(`Mengupdate indikator dengan UUID: ${uuid}`); // Debugging
 
+    // Validasi sederhana untuk memastikan data tidak kosong
+    if (!uuid || !rencanaPegawaiId || !aspek || !indikatorKinerja || !tipeTarget || !targetMinimum || !satuan) {
+        toastError('Harap lengkapi semua data wajib sebelum mengupdate.');
+        return;
+    }
+
+    // Proses AJAX untuk mengupdate data
     $.ajax({
-        type: "PUT", // Ganti dengan PUT sesuai resource Laravel
-        url: `/indikator-kinerja/${uuid}/update`, // Gunakan UUID di URL
+        type: "PUT", // Gunakan metode HTTP PUT
+        url: `/indikator-kinerja/${uuid}/update`, // Pastikan URL endpoint sesuai
         headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Tambahkan CSRF token
         },
         data: {
             rencana_kerja_pegawai_id: rencanaPegawaiId,
@@ -474,15 +495,19 @@ $('#formEditIndikator').submit(function(e) {
             report: report
         },
         success: function(response) {
-            toastSuccess(response.message);
-            $('#modalEditIndikator').modal('hide');
-            location.reload();
+            console.log('Success:', response); // Debugging respons sukses
+            toastSuccess(response.message ||
+                'Indikator berhasil diperbarui.'); // Tampilkan notifikasi sukses
+            $('#modalEditIndikator').modal('hide'); // Tutup modal
+            location.reload(); // Reload halaman untuk memperbarui tampilan
         },
         error: function(xhr) {
-            toastError(xhr.responseJSON.message);
+            console.error('Error:', xhr); // Debugging error dari server
+            const errorMessage = xhr.responseJSON?.message ||
+                'Terjadi kesalahan saat mengupdate indikator.';
+            toastError(errorMessage); // Tampilkan pesan error
         }
     });
-
 });
 </script>
 

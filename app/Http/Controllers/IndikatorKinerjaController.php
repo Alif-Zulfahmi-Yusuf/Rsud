@@ -63,28 +63,36 @@ class IndikatorKinerjaController extends Controller
 
     public function update(Request $request, $uuid)
     {
-        $data = $request->validate([
-            'rencana_kerja_pegawai_id' => 'required|exists:rencana_hasil_kerja_pegawai,id',
-            'aspek' => 'required|string|max:255',
-            'indikator_kinerja' => 'required|string',
-            'tipe_target' => 'required|string',
-            'target_minimum' => 'required|numeric',
-            'target_maksimum' => 'nullable|numeric',
-            'satuan' => 'required|string|max:255',
-            'report' => 'nullable|string',
-        ]);
-
+        Log::info('Data diterima untuk update:', $request->all());
+        // Validasi data dari form
         try {
+            $data = $request->validate([
+                'rencana_kerja_pegawai_id' => 'required|exists:rencana_hasil_kerja_pegawai,id',
+                'aspek' => 'required|string|max:255',
+                'indikator_kinerja' => 'required|string',
+                'tipe_target' => 'required|string',
+                'target_minimum' => 'required|numeric',
+                'target_maksimum' => 'nullable|numeric',
+                'satuan' => 'required|string|max:255',
+                'report' => 'nullable|string',
+            ]);
+
+            Log::info('Data valid:', $data);
 
             $this->indikatorService->update($uuid, $data);
 
             return response()->json(['message' => 'Indikator berhasil diperbarui.']);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('Validasi gagal:', $e->errors());
+            return response()->json(['message' => 'Validasi gagal.'], 422);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Indikator tidak ditemukan.'], 404);
         } catch (\Exception $e) {
+            Log::error('Kesalahan:', ['error' => $e->getMessage()]);
             return response()->json(['message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
         }
     }
+
 
     /**
      * Remove the specified resource from storage.
