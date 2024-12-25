@@ -25,7 +25,8 @@
 
     <!-- Form Filter -->
     <div class="col-12 col-md-4">
-        <form method="GET" action="{{ route('validasi-harian.index') }}" class="d-flex flex-wrap align-items-end justify-content-end">
+        <form method="GET" action="{{ route('validasi-harian.index') }}"
+            class="d-flex flex-wrap align-items-end justify-content-end">
             <!-- Filter Bulan -->
             <div class="me-2 mb-2 flex-grow-1">
                 <select id="bulan" name="bulan" class="form-control">

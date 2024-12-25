@@ -14,7 +14,7 @@
                     <!-- Rencana Hasil Kerja -->
                     <div class="form-group mb-3">
                         <label for="rencana_hasil_kerja" class="form-label">Rencana Hasil Kerja</label>
-                        <input type="text" name="rencana_hasil_kerja" id="rencana_hasil_kerja" class="form-control">
+                        <input type="text" name="rencana" id="rencana_hasil_kerja" class="form-control">
                     </div>
                     <!-- Tombol Submit -->
                     <button type="submit" class="btn btn-phoenix-secondary me-1 mb-1">Save</button>

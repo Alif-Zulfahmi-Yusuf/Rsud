@@ -64,6 +64,8 @@ const deleteData = (e) => {
                         }
                     });
                     table.draw(); // Redraw tabel untuk memperbarui tampilan
+                    location.reload(); // Reload halaman untuk memperbarui konten
+
                 },
                 error: function (xhr, status, error) {
                     stopLoading(); // Menghentikan loading indikator jika ada error
@@ -92,55 +94,6 @@ const removeRowFromTable = (uuid) => {
     });
     table.draw();  // Redraw DataTable untuk memperbarui tampilan
 }
-
-
-const editData = (uuid, tanggal, jenisKegiatan, uraian, rencanaPegawaiId, output, jumlah, waktuMulai, waktuSelesai, biaya, fileEvidence) => {
-    console.log(`Edit Data UUID: ${uuid}`);
-    console.log(`Tanggal: ${tanggal}, Waktu Mulai: ${waktuMulai}, Waktu Selesai: ${waktuSelesai}`);
-    console.log(`File Evidence: ${fileEvidence}`);
-
-    // Format data jika diperlukan
-    const formattedTanggal = new Date(tanggal).toISOString().split('T')[0]; // Format YYYY-MM-DD
-    const formattedWaktuMulai = waktuMulai ? waktuMulai.slice(0, 5) : ''; // Ambil hanya HH:mm
-    const formattedWaktuSelesai = waktuSelesai ? waktuSelesai.slice(0, 5) : ''; // Ambil hanya HH:mm
-
-    // Set nilai input modal
-    $('#tanggal').val(formattedTanggal);
-    $('#jenis_kegiatan').val(jenisKegiatan).trigger('change');
-    $('#uraian').val(uraian);
-    $('#rencana_pegawai_id').val(rencanaPegawaiId).trigger('change');
-    $('#output').val(output);
-    $('#jumlah').val(jumlah);
-    $('#waktu_mulai').val(formattedWaktuMulai); // Set waktu mulai
-    $('#waktu_selesai').val(formattedWaktuSelesai); // Set waktu selesai
-    $('#biaya').val(biaya);
-
-    // Reset file input dan tampilkan nama file yang ada
-    if (fileEvidence) {
-        $('#evidence').val(''); // Reset file input
-        $('#evidence-label').text(`File saat ini: ${fileEvidence}`).show(); // Tampilkan nama file
-    } else {
-        $('#evidence-label').hide(); // Sembunyikan jika tidak ada file
-    }
-
-    // Aktifkan Select2
-    $('#jenis_kegiatan').select2({
-        dropdownParent: $('#editHarianModal'),
-        theme: "bootstrap-5",
-        placeholder: "Pilih Jenis Kegiatan",
-        allowClear: true
-    });
-
-    $('#rencana_pegawai_id').select2({
-        dropdownParent: $('#editHarianModal'),
-        theme: 'bootstrap-5',
-        placeholder: 'Pilih Rencana Kegiatan',
-        allowClear: true
-    });
-
-    // Tampilkan modal
-    $('#editHarianModal').modal('show');
-};
 
 
 $(document).ready(function () {

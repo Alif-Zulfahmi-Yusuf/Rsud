@@ -19,12 +19,7 @@ class RencanaKerjaController extends Controller
     {
         $this->rencanaKerjaatasanService = $rencanaKerjaatasanService;
     }
-    /**
-     * Display a listing of the resource.
-     */
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(Request $request)
     {
         try {
@@ -32,13 +27,22 @@ class RencanaKerjaController extends Controller
             $validated = $request->validate([
                 'rencana' => 'required|string|max:255|unique:rencana_hasil_kerja',
             ]);
+
             // Simpan data menggunakan service
             $this->rencanaKerjaatasanService->store($validated);
+
+            // Log sukses menyimpan data
+            Log::info('Rencana Hasil Kerja berhasil disimpan', [
+                'data' => $validated,
+            ]);
 
             // Redirect ke halaman index atau halaman sukses lainnya
             return back()->with('success', 'Rencana Hasil Kerja berhasil disimpan.');
         } catch (\Exception $e) {
             // Tangani error jika terjadi kesalahan
+            Log::error('Gagal menyimpan Rencana Hasil Kerja', [
+                'error' => $e->getMessage(),
+            ]);
             return back()->with('error', $e->getMessage()); // Hanya kirim string error
         }
     }

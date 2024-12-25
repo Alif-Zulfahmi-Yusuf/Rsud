@@ -83,7 +83,7 @@
                         <td class="text-center align-middle">{{ $kegiatan->jumlah }}</td>
                         <td class="text-center align-middle">
                             Rp {{ number_format((float) ($kegiatan->biaya ?? 0), 0, ',', '.') }}
-                        </td> 
+                        </td>
                         <td class="text-center align-middle">
                             {{ \Carbon\Carbon::parse($kegiatan->waktu_mulai)->format('H:i') }} sd
                             {{ \Carbon\Carbon::parse($kegiatan->waktu_selesai)->format('H:i') }}
@@ -119,8 +119,9 @@
                                             '{{ $kegiatan->output }}', 
                                             '{{ $kegiatan->jumlah }}', 
                                             '{{ $kegiatan->waktu_mulai }}', 
-                                            '{{ $kegiatan->waktu_selesai }}', 
-                                            '{{ $kegiatan->biaya }}'
+                                            '{{ $kegiatan->waktu_selesai }}',
+                                            '{{ $kegiatan->biaya }}',
+                                            '{{ $kegiatan->evidence }}'
                                             )" data-bs-toggle="modal" data-bs-target="#editHarianModal"
                                         {{ $kegiatan->status === 'approve' ? 'aria-disabled=true' : '' }}>
                                         Edit
@@ -144,30 +145,32 @@
 @endsection
 
 <!-- Modal Edit -->
-<div class="modal fade" id="editHarianModal" tabindex="-1" aria-labelledby="editHarianModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editHarianModalLabel">Form Kegiatan Harian</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <!-- Form Kegiatan Harian -->
-                <form action="{{ isset($kegiatan) ? route('harian-pegawai.update', $kegiatan->uuid) : '#' }}"
-                    method="POST" enctype="multipart/form-data">
-                    @csrf
-                    @method('PATCH')
+
+<form id="formEditHarian" method="POST" enctype="multipart/form-data">
+    @csrf
+    @method('PATCH')
+    <div class="modal fade" id="editHarianModal" tabindex="-1" aria-labelledby="editHarianModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editHarianModalLabel">Form Kegiatan Harian</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Form Kegiatan Harian -->
+                    <input type="hidden" name="uuid" id="edit-uuid">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group mb-3">
                                 <label for="tanggal" class="form-label">Tanggal *</label>
-                                <input type="date" name="tanggal" id="tanggal" class="form-control" required>
+                                <input type="date" name="tanggal" id="edit-tanggal" class="form-control" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group mb-3">
                                 <label for="jenis_kegiatan" class="form-label">Jenis Kegiatan *</label>
-                                <select name="jenis_kegiatan" id="jenis_kegiatan" class="form-select" required>
+                                <select name="jenis_kegiatan" id="edit-jenis_kegiatan" class="form-select" required>
                                     <option value="" disabled selected>-- Pilih --</option>
                                     <option value="tugas_pokok">Tugas Pokok</option>
                                     <option value="tugas_tambahan">Tugas Tambahan</option>
@@ -179,12 +182,12 @@
                     </div>
                     <div class="form-group mb-3">
                         <label for="uraian" class="form-label">Uraian *</label>
-                        <textarea name="uraian" id="uraian" class="form-control" style="height: 100px;"
+                        <textarea name="uraian" id="edit-uraian" class="form-control" style="height: 100px;"
                             required></textarea>
                     </div>
                     <div class="form-group mb-3">
                         <label for="rencana_pegawai_id" class="form-label">Rencana Aksi *</label>
-                        <select name="rencana_pegawai_id" id="rencana_pegawai_id" class="form-select" required>
+                        <select name="rencana_pegawai_id" id="edit-rencana_pegawai_id" class="form-select" required>
                             <option value="" disabled selected>-- Pilih --</option>
                             @foreach ($rencanaKerjaPegawai as $rencana)
                             <option value="{{ $rencana->id }}">{{ $rencana->rencana }}</option>
@@ -195,13 +198,13 @@
                         <div class="col-md-6">
                             <div class="form-group mb-3">
                                 <label for="output" class="form-label">Output *</label>
-                                <input type="text" name="output" id="output" class="form-control" required>
+                                <input type="text" name="output" id="edit-output" class="form-control" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group mb-3">
                                 <label for="jumlah" class="form-label">Jumlah *</label>
-                                <input type="text" name="jumlah" id="jumlah" class="form-control" required>
+                                <input type="text" name="jumlah" id="edit-jumlah" class="form-control" required>
                             </div>
                         </div>
                     </div>
@@ -209,38 +212,40 @@
                         <div class="col-md-6">
                             <div class="form-group mb-3">
                                 <label for="waktu_mulai" class="form-label">Waktu Mulai (Jam) *</label>
-                                <input type="time" name=" waktu_mulai" id="waktu_mulai" class="form-control" required>
+                                <input type="time" name="waktu_mulai" id="edit-waktu_mulai" class="form-control"
+                                    required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group mb-3">
                                 <label for="waktu_selesai" class="form-label">Waktu Selesai (Jam) *</label>
-                                <input type="time" name="waktu_selesai" id="waktu_selesai" class="form-control"
+                                <input type="time" name="waktu_selesai" id="edit-waktu_selesai" class="form-control"
                                     required>
                             </div>
                         </div>
                     </div>
                     <div class="form-group mb-3">
                         <label for="biaya" class="form-label">Biaya (Jika Ada)</label>
-                        <input type="text" name="biaya" id="biaya" class="form-control">
+                        <input type="text" name="biaya" id="edit-biaya" class="form-control">
                     </div>
                     <div class="form-group mb-3">
                         <label for="evidence" class="form-label">File Evidence</label>
-                        <input type="file" name="evidence" id="evidence" class="form-control">
+                        <input type="file" name="evidence" id="edit-evidence" class="form-control">
                         <small id="evidence-label" class="form-text text-muted" style="display: none;">File saat
                             ini:</small>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" name="is_draft" value="0" class="btn btn-outline-danger">Save as
-                            Draft</button>
-                        <button type="submit" name="is_draft" value="1" class="btn btn-secondary">Save & Review</button>
-                    </div>
-                </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" name="is_draft" value="0" class="btn btn-outline-danger">Save as
+                        Draft</button>
+                    <button type="submit" name="is_draft" value="1" class="btn btn-secondary">Save & Review</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</form>
+
 
 @include('backend.harian._modal')
 
@@ -258,12 +263,134 @@
 
 
 <script>
-@if(session('success'))
-toastSuccess("{{ session('success') }}");
-@endif
+$(document).ready(function() {
+    @if(session('success'))
+    toastSuccess("{{ session('success') }}");
+    @endif
 
-@if(session('error'))
-toastError("{{ session('error') }}");
-@endif
+    @if(session('error'))
+    toastError("{{ session('error') }}");
+    @endif
+});
+
+const editData = (uuid, tanggal, jenisKegiatan, uraian, rencanaPegawaiId, output, jumlah, waktuMulai, waktuSelesai,
+    biaya, fileEvidence) => {
+    console.log(`Edit Data UUID: ${uuid}`);
+    console.log(`Tanggal: ${tanggal}`);
+    console.log(`Waktu mulai: ${waktuMulai}`);
+    console.log(`Waktu selesai: ${waktuSelesai}`);
+    console.log(`File Evidence: ${fileEvidence}`);
+
+    // Format data jika diperlukan
+    const formattedTanggal = new Date(tanggal).toISOString().split('T')[0]; // Format YYYY-MM-DD
+    const formattedWaktuMulai = waktuMulai ? `${waktuMulai.slice(0, 2)} : ${waktuMulai.slice(3, 5)}` :
+        ''; // Format ke H : i
+    const formattedWaktuSelesai = waktuSelesai ? `${waktuSelesai.slice(0, 2)} : ${waktuSelesai.slice(3, 5)}` :
+        ''; // Format ke H : i
+
+    // Set nilai input modal
+    $('#edit-uuid').val(uuid);
+    $('#edit-tanggal').val(formattedTanggal);
+    $('#edit-jenis_kegiatan').val(jenisKegiatan).trigger('change');
+    $('#edit-uraian').val(uraian);
+    $('#edit-rencana_pegawai_id').val(rencanaPegawaiId).trigger('change');
+    $('#edit-output').val(output);
+    $('#edit-jumlah').val(jumlah);
+    $('#edit-waktu_mulai').val(formattedWaktuMulai); // Set waktu mulai
+    $('#edit-waktu_selesai').val(formattedWaktuSelesai); // Set waktu selesai
+    $('#edit-biaya').val(biaya);
+
+    // Reset file input dan tampilkan nama file yang ada
+    if (fileEvidence) {
+        $('#edit-evidence').val(''); // Reset file input
+        $('#evidence-label').text(`File saat ini: ${fileEvidence}`).show(); // Tampilkan nama file
+    } else {
+        $('#evidence-label').hide(); // Sembunyikan jika tidak ada file
+    }
+
+    // Aktifkan Select2
+    $('#edit-jenis_kegiatan').select2({
+        dropdownParent: $('#editHarianModal'),
+        theme: "bootstrap-5",
+        placeholder: "Pilih Jenis Kegiatan",
+        allowClear: true
+    });
+
+    $('#edit-rencana_pegawai_id').select2({
+        dropdownParent: $('#editHarianModal'),
+        theme: 'bootstrap-5',
+        placeholder: 'Pilih Rencana Kegiatan',
+        allowClear: true
+    });
+
+    // Tampilkan modal
+    $('#editHarianModal').modal('show');
+};
+
+$('#formEditHarian').submit(function(e) {
+    e.preventDefault(); // Mencegah perilaku default submit form
+
+    // Ambil data dari form
+    const uuid = $('#edit-uuid').val(); // ID dari form untuk UUID
+    const tanggal = $('#edit-tanggal').val(); // ID dari form untuk tanggal
+    const jenisKegiatan = $('#edit-jenis_kegiatan').val(); // ID dari form untuk jenis kegiatan
+    const uraian = $('#edit-uraian').val(); // ID dari form untuk uraian
+    const rencanaPegawaiId = $('#edit-rencana_pegawai_id').val(); // ID dari form untuk rencana pegawai
+    const output = $('#edit-output').val(); // ID dari form untuk output
+    const jumlah = $('#edit-jumlah').val(); // ID dari form untuk jumlah
+    const waktuMulai = $('#edit-waktu_mulai').val(); // ID dari form untuk waktu mulai
+    const waktuSelesai = $('#edit-waktu_selesai').val(); // ID dari form untuk waktu selesai
+    const biaya = $('#edit-biaya').val(); // ID dari form untuk biaya
+    const evidenceFile = $('#edit-evidence')[0].files[0]; // File evidence baru dari form
+
+    console.log(`Mengupdate data harian dengan UUID: ${uuid}`); // Debugging
+
+    // Validasi sederhana untuk memastikan data tidak kosong
+    if (!uuid || !tanggal || !jenisKegiatan || !uraian || !rencanaPegawaiId || !output) {
+        toastError('Harap lengkapi semua data wajib sebelum mengupdate.');
+        return;
+    }
+    // Proses AJAX untuk mengupdate data
+    $.ajax({
+        type: "PATCH", // Gunakan metode POST karena mengunggah file
+        url: `/harian-pegawai/${uuid}/update`, // Endpoint dinamis dengan UUID
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Tambahkan CSRF token
+        },
+        data: { // Data yang akan dikirimkan
+            tanggal: tanggal,
+            jenis_kegiatan: jenisKegiatan,
+            uraian: uraian,
+            rencana_pegawai_id: rencanaPegawaiId,
+            output: output,
+            jumlah: jumlah,
+            waktu_mulai: waktuMulai,
+            waktu_selesai: waktuSelesai,
+            biaya: biaya,
+            evidence: evidenceFile // File evidence baru
+        },
+        success: function(response) {
+            console.log('Success:', response); // Debugging respons sukses
+            toastSuccess(response.message ||
+                'Data berhasil diperbarui.'); // Tampilkan notifikasi sukses
+            $('#editHarianModal').modal('hide'); // Tutup modal
+            location.reload(); // Reload halaman untuk memperbarui tampilan
+        },
+        error: function(xhr) {
+            console.error('Error:', xhr); // Debugging error dari server
+            // Ambil pesan error dari server
+            let errorMessage = 'Terjadi kesalahan saat mengupdate data harian.';
+            if (xhr.responseJSON && xhr.responseJSON.errors) {
+                // Gabungkan semua pesan error dari server
+                errorMessage = Object.values(xhr.responseJSON.errors)
+                    .flat()
+                    .join('<br>');
+            } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMessage = xhr.responseJSON.message;
+            }
+            toastError(errorMessage); // Tampilkan pesan error
+        }
+    });
+});
 </script>
 @endpush

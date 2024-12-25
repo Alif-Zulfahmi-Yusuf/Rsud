@@ -6,10 +6,10 @@ use Illuminate\Http\Request;
 use App\Models\KegiatanHarian;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Http\Services\KegiatanService;
 use App\Models\RencanaHasilKinerjaPegawai;
-use App\Http\Requests\HarianPegawaiRequest;
+use Illuminate\Http\UploadedFile;
 
 class KegiatanHarianController extends Controller
 {
@@ -69,37 +69,53 @@ class KegiatanHarianController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, KegiatanService $service, $uuid)
+    public function update(Request $request, $uuid)
     {
-        // Validasi data yang masuk
-        $request->validate([
-            'tanggal' => 'required|date',
-            'jenis_kegiatan' => 'required|string',
-            'uraian' => 'required|string',
-            'rencana_pegawai_id' => 'required|integer',
-            'output' => 'required|string',
-            'jumlah' => 'required|numeric',
-            'waktu_mulai' => 'required|date_format:H:i',
-            'waktu_selesai' => 'required|date_format:H:i',
-            'biaya' => 'nullable|numeric',
-            'evidence' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048', // Sesuaikan dengan jenis file yang diizinkan
-        ]);
+        Log::info('Data diterima untuk update:', $request->all());
 
         try {
-            $data = $request->all();
+            // Validasi data yang masuk
+            $data = $request->validate([
+                'tanggal' => 'required|date',
+                'jenis_kegiatan' => 'required|string',
+                'uraian' => 'required|string',
+                'rencana_pegawai_id' => 'required|integer',
+                'output' => 'required|string',
+                'jumlah' => 'required|numeric',
+                'waktu_mulai' => 'required|date_format:H:i',
+                'waktu_selesai' => 'required|date_format:H:i',
+                'biaya' => 'nullable|numeric',
+                'evidence' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048', // Sesuaikan dengan jenis file yang diizinkan
+            ]);
+
+            Log::info('Data valid:', $data);
 
             // Ambil nilai is_draft dan konversi ke boolean
             $isDraft = $request->input('is_draft') === '1'; // Draft jika nilai is_draft adalah string '0'
+            $status = 'pending';
 
-            // Panggil service untuk memperbarui kegiatan harian
-            $kegiatanHarian = $service->updateKegiatanHarian($uuid, $data, $isDraft);
+            // Tangani file evidence jika ada
+            if (isset($data['evidence']) && $data['evidence'] instanceof UploadedFile) {
+                $path = $data['evidence']->store('evidence', 'public'); // Simpan file di storage/public/evidence
+                Log::info('Evidence berhasil diunggah.', [
+                    'file_path' => $path
+                ]);
+                $data['evidence'] = $path;
+            }
 
-            return redirect()->back()->with('success', 'Kegiatan Harian berhasil diperbarui.');
+            // Perbarui kegiatan harian di database
+            $kegiatanHarian = KegiatanHarian::where('uuid', $uuid)->firstOrFail();
+            $kegiatanHarian->update($data);
+
+            return response()->json(['message' => 'Kegiatan Harian berhasil diperbarui.']);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('Validasi gagal:', $e->errors());
+            return response()->json(['message' => 'Validasi gagal.'], 422);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'Kegiatan Harian tidak ditemukan.'], 404);
         } catch (\Exception $e) {
-            Log::error('Gagal memperbarui Kegiatan Harian.', [
-                'error' => $e->getMessage()
-            ]);
-            return redirect()->back()->with('error', $e->getMessage());
+            Log::error('Kesalahan:', ['error' => $e->getMessage()]);
+            return response()->json(['message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
         }
     }
 

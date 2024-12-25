@@ -93,7 +93,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::resource('harian-pegawai', KegiatanHarianController::class);
     Route::delete('/harian-pegawai/destroy/{uuid}', [KegiatanHarianController::class, 'destroy'])->name('harian-pegawai.destroy');
-    Route::patch('/harian-pegawai/update/{uuid}', [KegiatanHarianController::class, 'update'])->name('harian-pegawai.update');
+    Route::patch('/harian-pegawai/{uuid}/update', [KegiatanHarianController::class, 'update'])->name('harian-pegawai.update');
 });
 
 require __DIR__ . '/auth.php';

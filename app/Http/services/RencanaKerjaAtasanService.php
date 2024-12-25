@@ -25,7 +25,7 @@ class RencanaKerjaAtasanService
 
             // Menyimpan data RencanaHasilKerja
             $rencanaHasilKerja = RencanaHasilKinerja::create([
-                'rencana' => $data['rencana_hasil_kerja'], // Gunakan nama field dari form
+                'rencana' => $data['rencana'], // Gunakan nama field dari form
                 'user_id' => $user->id,
                 'skp_atasan_id' => $skp->id,
             ]);

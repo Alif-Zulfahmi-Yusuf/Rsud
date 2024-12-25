@@ -306,7 +306,6 @@
                     <input type="hidden" name="uuid" id="edit-uuid">
                     <!-- Ubah id menjadi sesuai dengan yang digunakan di JS -->
 
-
                     <div class="form-group mb-3">
                         <label for="editRencanaPegawai" class="form-label">Rencana Pegawai</label>
                         <select class="form-select" id="editRencanaPegawai" name="rencana_kerja_pegawai_id" required>
