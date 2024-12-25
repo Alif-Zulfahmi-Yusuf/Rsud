@@ -26,6 +26,7 @@ class RencanaKerjaController extends Controller
             // Validasi data dari form
             $validated = $request->validate([
                 'rencana' => 'required|string|max:255|unique:rencana_hasil_kerja',
+                'skp_atasan_id' => 'required|exists:skp_atasan,id', // Validasi SKP atasan ID
             ]);
 
             // Simpan data menggunakan service
@@ -43,7 +44,7 @@ class RencanaKerjaController extends Controller
             Log::error('Gagal menyimpan Rencana Hasil Kerja', [
                 'error' => $e->getMessage(),
             ]);
-            return back()->with('error', $e->getMessage()); // Hanya kirim string error
+            return back()->with('error', $e->getMessage());
         }
     }
 

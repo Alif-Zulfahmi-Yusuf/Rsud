@@ -12,6 +12,8 @@
                 <form action="{{ route('rencana-kerja.store') }}" method="POST">
                     @csrf
                     <!-- Rencana Hasil Kerja -->
+                    <!-- Input Hidden SKP Atasan ID -->
+                    <input type="hidden" name="skp_atasan_id" value="{{ $skpDetail->id }}">
                     <div class="form-group mb-3">
                         <label for="rencana_hasil_kerja" class="form-label">Rencana Hasil Kerja</label>
                         <input type="text" name="rencana" id="rencana_hasil_kerja" class="form-control">
