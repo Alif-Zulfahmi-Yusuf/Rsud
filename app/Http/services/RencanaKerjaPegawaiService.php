@@ -24,10 +24,10 @@ class RencanaKerjaPegawaiService
             DB::beginTransaction(); // Mulai transaksi
 
             $user = Auth::user();
-            $skp = Skp::where('user_id', $user->id)->first();
-
-            if (!$skp) {
-                throw new Exception("SKP tidak ditemukan.");
+            // Validasi keberadaan SKP Atasan (opsional, jika belum tervalidasi di controller)
+            $skp = Skp::findOrFail($data['skp_id']);
+            if ($skp->user_id !== $user->id) {
+                throw new Exception('Anda tidak memiliki akses ke SKP ini.');
             }
 
             // Menyimpan data RencanaHasilKinerjaPegawai
@@ -35,7 +35,7 @@ class RencanaKerjaPegawaiService
                 'rencana_atasan_id' => $data['rencana_atasan_id'],
                 'rencana' => $data['rencana'],
                 'user_id' => $user->id,
-                'skp_id' => $skp->id,
+                'skp_id' => $data['skp_id'],
             ]);
 
             DB::commit(); // Commit transaksi jika semuanya berhasil

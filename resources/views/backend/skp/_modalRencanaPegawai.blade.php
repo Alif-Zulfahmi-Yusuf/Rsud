@@ -11,6 +11,7 @@
                 <!-- Form SKP -->
                 <form action="{{ route('rencana-pegawai.store') }}" method="POST">
                     @csrf
+                    <input type="hidden" name="skp_id" value="{{ $skpDetail->id }}">
                     <!-- Rencana Atasan -->
                     <div class="form-group mb-3">
                         <label for="rencana_atasan" class="form-label">Rencana Atasan</label>

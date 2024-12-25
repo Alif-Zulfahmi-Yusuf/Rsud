@@ -33,6 +33,7 @@ class RencanaKerjaPegawaiController extends Controller
             $validated = $request->validate([
                 'rencana_atasan_id' => 'required|exists:rencana_hasil_kerja,id', // Validasi rencana atasan
                 'rencana' => 'required|string|max:255', // Validasi rencana hasil kerja
+                'skp_id' => 'required|exists:skps,id',
             ]);
 
             // Simpan data menggunakan service
