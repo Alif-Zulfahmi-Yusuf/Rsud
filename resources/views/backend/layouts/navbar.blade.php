@@ -75,7 +75,7 @@
                             <div class="px-3">
                                 <form method="POST" action="{{ route('logout') }}" class="p-3">
                                     @csrf
-                                    <button type="submit" class="btn btn-phoenix-secondary d-flex flex-center w-100">
+                                    <button type="submit" class="btn btn-phoenix-danger d-flex flex-center w-100">
                                         <span class="icon" data-feather="log-out"></span>
                                         <span class="ms-2">Sign out</span>
                                     </button>
