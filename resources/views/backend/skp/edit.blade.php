@@ -99,7 +99,9 @@
             </div>
         </div>
     </div>
-    <form id="form-skp" action="{{ route('skp.update', $skpDetail->uuid) }}" method="POST">
+    <form id="form-skp" action="{{ route('skp.update', $skpDetail->uuid) }}" method="POST"
+        data-submit-url="{{ route('skp.update', $skpDetail->uuid) }}"
+        data-toggle-url="{{ route('skp.toggle', $skpDetail->id) }}">>
         @csrf
         @method('PUT')
         <div class="card shadow rounded-lg mb-4">
@@ -256,17 +258,32 @@
                     <textarea name="keterangan" id="catatan" class="form-control" style="height: 150px;"
                         placeholder="Masukkan Alasan revisi jika diperlukan..."></textarea>
                 </div>
-                @if ($skpDetail->status === 'revisi')
-                <button type="button" class="btn btn-phoenix-danger me-1 mb-1" onclick="confirmSubmit()">Ajukan
-                    Revisi</button>
-                @elseif (!$skpDetail->is_submitted)
-                <button type="button" class="btn btn-phoenix-secondary me-1 mb-1" onclick="confirmSubmit()">Ajukan
-                    SKP</button>
-                @else
-                <p class="text-success">SKP telah diajukan pada {{ $skpDetail->submitted_at->format('d-m-Y H:i') }}</p>
-                @endif
+
+                <div>
+                    @if ($skpDetail->is_active)
+                    <button type="button" class="btn btn-phoenix-warning"
+                        onclick="confirmToggle({{ $skpDetail->id }}, false)">Nonaktifkan</button>
+                    @else
+                    <button type="button" class="btn btn-phoenix-primary"
+                        onclick="confirmToggle({{ $skpDetail->id }}, true)">Aktifkan</button>
+                    @endif
+
+                    @if ($skpDetail->status === 'revisi')
+                    <button type="button" class="btn btn-phoenix-danger me-1 mb-1" onclick="confirmSubmit()">Ajukan
+                        Revisi</button>
+                    @elseif (!$skpDetail->is_submitted)
+                    <button type="button" class="btn btn-phoenix-secondary me-1 mb-1" onclick="confirmSubmit()">Ajukan
+                        SKP</button>
+                    @else
+                    <span class="badge badge-phoenix badge-phoenix-success">
+                        SKP telah diajukan pada
+                        {{ $skpDetail->submitted_at->format('d-m-Y H:i') }}
+                    </span>
+                    @endif
+                </div>
             </div>
         </div>
+
         @if ($skpDetail->status === 'revisi')
         <div class="card border-danger">
             <div class="card-body">
@@ -429,10 +446,33 @@ function confirmSubmit() {
         cancelButtonText: 'Batal'
     }).then((result) => {
         if (result.isConfirmed) {
-            document.getElementById('form-skp').submit();
+            // Arahkan form untuk pengajuan SKP
+            const form = document.getElementById('form-skp');
+            form.action = form.getAttribute('data-submit-url'); // URL untuk pengajuan
+            form.submit();
         }
     });
 }
+
+function confirmToggle(skpId, status) {
+    const action = status ? 'mengaktifkan' : 'menonaktifkan';
+    Swal.fire({
+        title: `Apakah Anda yakin ingin ${action} SKP ini?`,
+        text: "Perubahan ini akan mempengaruhi status SKP.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: `Ya, ${action}!`,
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Arahkan form untuk aktivasi SKP
+            const form = document.getElementById('form-skp');
+            form.action = form.getAttribute('data-toggle-url'); // URL untuk aktivasi
+            form.submit();
+        }
+    });
+}
+
 
 const openEditIndikatorModal = (uuid, rencanaPegawaiId, aspek, indikatorKinerja, tipeTarget, targetMinimum,
     targetMaximum, satuan, report) => {

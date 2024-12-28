@@ -92,7 +92,6 @@ class SkpController extends Controller
     }
 
 
-
     /**
      * Update the specified resource in storage.
      */
@@ -100,8 +99,8 @@ class SkpController extends Controller
     {
         // Validasi data (jika ada)
         $request->validate([
-            // Tambahkan aturan validasi jika diperlukan
             'keterangan' => 'nullable|string',
+            'is_active' => 'nullable|boolean', // Validasi tambahan untuk is_active
         ]);
 
         // Cari SKP berdasarkan UUID
@@ -112,12 +111,26 @@ class SkpController extends Controller
         $skp->is_submitted = 1;   // Tandai sebagai telah diajukan
         $skp->submitted_at = now(); // Catat waktu pengajuan
         $skp->keterangan = $request->input('keterangan'); // Simpan keterangan
+
+        // Periksa apakah ada input untuk is_active
+        if ($request->has('is_active')) {
+            $skp->is_active = $request->input('is_active');
+        }
+
         $skp->save();
 
         // Berikan notifikasi sukses ke pengguna
-        return redirect()->route('skp.index')->with('success', 'SKP berhasil diajukan!');
+        return redirect()->route('skp.index')->with('success', 'SKP berhasil diperbarui!');
     }
 
+    public function toggle(Request $request, $id)
+    {
+        $skp = Skp::findOrFail($id);
+        $skp->is_active = !$skp->is_active;
+        $skp->save();
+
+        return redirect()->route('skp.index')->with('success', 'Status SKP berhasil diperbarui.');
+    }
 
     /**
      * Remove the specified resource from storage.

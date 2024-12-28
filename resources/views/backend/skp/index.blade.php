@@ -95,9 +95,7 @@
                                     </svg>
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-end py-2">
-                                    <a class="dropdown-item {{ $skp->status === 'approve' ? 'disabled' : '' }}"
-                                        href="{{ $skp->status === 'approve' ? '#' : route('skp.edit', $skp->uuid) }}"
-                                        {{ $skp->status === 'approve' ? 'aria-disabled=true' : '' }}>
+                                    <a class="dropdown-item" href="{{ route('skp.edit', $skp->uuid) }}">
                                         Edit
                                     </a>
                                     <hr class="dropdown-divider">

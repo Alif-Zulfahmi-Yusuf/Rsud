@@ -32,6 +32,7 @@ class KegiatanHarianController extends Controller
         // Ambil SKP yang disetujui (status 'approve') untuk user ini
         $activeSkp = Skp::where('user_id', $user->id)
             ->where('status', 'approve')
+            ->where('is_active', true)
             ->first();
 
         // Jika tidak ada SKP yang disetujui, set rencana kerja pegawai ke koleksi kosong

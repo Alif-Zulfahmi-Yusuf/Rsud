@@ -43,6 +43,8 @@ Route::group(['middleware' => ['auth']], function () {
     // bagian skp
     Route::resource('skp', SkpController::class);
     Route::delete('/skp/destroy/{uuid}', [SkpController::class, 'destroy'])->name('skp.destroy');
+    Route::put('/skp/{id}/toggle', [SkpController::class, 'toggle'])->name('skp.toggle');
+
 
     // bagian skp atasan
     Route::resource('skp_atasan', SkpAtasanController::class);
