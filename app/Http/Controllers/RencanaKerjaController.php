@@ -25,7 +25,7 @@ class RencanaKerjaController extends Controller
         try {
             // Validasi data dari form
             $validated = $request->validate([
-                'rencana' => 'required|string|max:255|unique:rencana_hasil_kerja',
+                'rencana' => 'required|string|max:500|unique:rencana_hasil_kerja',
                 'skp_atasan_id' => 'required|exists:skp_atasan,id', // Validasi SKP atasan ID
             ]);
 
@@ -55,7 +55,7 @@ class RencanaKerjaController extends Controller
     public function update(Request $request, $uuid)
     {
         $data = $request->validate([
-            'rencana' => 'required|string|max:255|unique:rencana_hasil_kerja,rencana,' . $uuid,
+            'rencana' => 'required|string|max:500|unique:rencana_hasil_kerja,rencana,' . $uuid,
         ]);
 
         try {

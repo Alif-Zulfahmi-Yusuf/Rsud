@@ -110,7 +110,7 @@ class ValidasiHarianController extends Controller
             }
         }
 
-        return redirect()->route('validasi-harian.index')->with(['success' => 'Data berhasil diperbarui dan status diubah menjadi "approve".']);
+        return redirect()->route('validasi-harian.index')->with(['success' => 'Data berhasil diperbarui']);
     }
 
     /**

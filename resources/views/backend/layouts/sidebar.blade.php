@@ -69,18 +69,18 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link {{ request()->routeIs('perilaku.*') ? 'active' : '' }}"
-                                        href="{{ route('perilaku.index') }}">
-                                        <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">Data Perilaku</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
                                     <a class="nav-link {{ request()->routeIs('category.*') ? 'active' : '' }}"
                                         href="{{ route('category.index') }}">
                                         <div class="d-flex align-items-center">
                                             <span class="nav-link-text">Data Category</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('perilaku.*') ? 'active' : '' }}"
+                                        href="{{ route('perilaku.index') }}">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">Data Perilaku</span>
                                         </div>
                                     </a>
                                 </li>

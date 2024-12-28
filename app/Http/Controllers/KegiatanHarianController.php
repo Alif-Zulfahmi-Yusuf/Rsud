@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Skp;
 use Illuminate\Http\Request;
 use App\Models\KegiatanHarian;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Http\Services\KegiatanService;
 use App\Models\RencanaHasilKinerjaPegawai;
-use Illuminate\Http\UploadedFile;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class KegiatanHarianController extends Controller
 {
@@ -28,8 +29,18 @@ class KegiatanHarianController extends Controller
     {
         $user = Auth::user();
 
-        // Ambil data rencana kerja pegawai untuk user yang sedang login
-        $rencanaKerjaPegawai = RencanaHasilKinerjaPegawai::where('user_id', $user->id)->get();
+        // Ambil SKP yang disetujui (status 'approve') untuk user ini
+        $activeSkp = Skp::where('user_id', $user->id)
+            ->where('status', 'approve')
+            ->first();
+
+        // Jika tidak ada SKP yang disetujui, set rencana kerja pegawai ke koleksi kosong
+        $rencanaKerjaPegawai = collect();
+        if ($activeSkp) {
+            $rencanaKerjaPegawai = RencanaHasilKinerjaPegawai::where('user_id', $user->id)
+                ->where('skp_id', $activeSkp->id)
+                ->get();
+        }
 
         // Ambil data kegiatan harian hanya untuk user yang sedang login
         $kegiatanHarian = KegiatanHarian::with(['user.pangkat'])
@@ -38,7 +49,7 @@ class KegiatanHarianController extends Controller
             ->get();
 
         // Kembalikan data ke view
-        return view('backend.harian.index', compact('rencanaKerjaPegawai', 'kegiatanHarian'));
+        return view('backend.harian.index', compact('rencanaKerjaPegawai', 'kegiatanHarian', 'activeSkp'));
     }
 
 

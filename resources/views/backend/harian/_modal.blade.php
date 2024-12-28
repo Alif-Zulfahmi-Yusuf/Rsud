@@ -37,12 +37,17 @@
                     </div>
                     <div class="form-group mb-3">
                         <label for="rencana_pegawai_id" class="form-label">Rencana Aksi *</label>
+                        @if ($rencanaKerjaPegawai->isEmpty())
+                        <p class="text-danger">Tidak ada rencana kerja yang tersedia karena belum ada SKP yang
+                            disetujui.</p>
+                        @else
                         <select name="rencana_pegawai_id" id="rencana_pegawai_id" class="form-select" required>
                             <option value="" disabled selected>-- Pilih --</option>
                             @foreach ($rencanaKerjaPegawai as $rencana)
                             <option value="{{ $rencana->id }}">{{ $rencana->rencana }}</option>
                             @endforeach
                         </select>
+                        @endif
                     </div>
                     <div class="row">
                         <div class="col-md-6">
