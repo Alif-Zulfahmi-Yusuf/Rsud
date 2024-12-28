@@ -101,7 +101,7 @@
     </div>
     <form id="form-skp" action="{{ route('skp.update', $skpDetail->uuid) }}" method="POST"
         data-submit-url="{{ route('skp.update', $skpDetail->uuid) }}"
-        data-toggle-url="{{ route('skp.toggle', $skpDetail->id) }}">>
+        data-toggle-url="{{ route('skp.toggle', $skpDetail->id) }}">
         @csrf
         @method('PUT')
         <div class="card shadow rounded-lg mb-4">

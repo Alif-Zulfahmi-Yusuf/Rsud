@@ -38,8 +38,9 @@
                     <div class="form-group mb-3">
                         <label for="rencana_pegawai_id" class="form-label">Rencana Aksi *</label>
                         @if ($rencanaKerjaPegawai->isEmpty())
-                        <p class="text-danger">Tidak ada rencana kerja yang tersedia karena belum ada SKP yang
-                            disetujui.</p>
+                        <span class="badge badge-phoenix badge-phoenix-danger">
+                            Belum ada rencana kerja atau skp belum di approve dan belum aktif
+                        </span>
                         @else
                         <select name="rencana_pegawai_id" id="rencana_pegawai_id" class="form-select" required>
                             <option value="" disabled selected>-- Pilih --</option>
