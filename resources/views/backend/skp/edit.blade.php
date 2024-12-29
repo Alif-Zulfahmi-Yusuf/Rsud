@@ -261,7 +261,7 @@
 
                 <div>
                     @if ($skpDetail->is_active)
-                    <button type="button" class="btn btn-phoenix-warning"
+                    <button type="button" class="btn btn-phoenix-danger"
                         onclick="confirmToggle({{ $skpDetail->id }}, false)">Nonaktifkan</button>
                     @else
                     <button type="button" class="btn btn-phoenix-primary"
@@ -271,13 +271,16 @@
                     @if ($skpDetail->status === 'revisi')
                     <button type="button" class="btn btn-phoenix-danger me-1 mb-1" onclick="confirmSubmit()">Ajukan
                         Revisi</button>
+                    @elseif ($skpDetail->status === 'approve')
+                    <span class="badge badge-phoenix badge-phoenix-success">
+                        SKP telah di Approve
+                    </span>
                     @elseif (!$skpDetail->is_submitted)
                     <button type="button" class="btn btn-phoenix-secondary me-1 mb-1" onclick="confirmSubmit()">Ajukan
                         SKP</button>
                     @else
                     <span class="badge badge-phoenix badge-phoenix-success">
-                        SKP telah diajukan pada
-                        {{ $skpDetail->submitted_at->format('d-m-Y H:i') }}
+                        SKP telah diajukan pada {{ $skpDetail->submitted_at->format('d-m-Y H:i') }}
                     </span>
                     @endif
                 </div>

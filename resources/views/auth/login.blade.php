@@ -112,25 +112,25 @@
                                                     alt="" width="50" />
                                             </div>
                                         </a>
-                                        <h3 class="text-body-highlight">Sign In</h3>
+                                        <h3 class="text-body-highlight">Selamat Datang</h3>
                                         <p class="text-body-tertiary">Silakan masuk ke akun Anda dan mulai lakukan
                                             kinerja Anda.</p>
                                     </div>
                                     <div class="position-relative">
                                         <hr class="bg-body-secondary mt-5 mb-4" />
-                                        <div class="divider-content-center bg-body-emphasis">Use Email</div>
+                                        <div class="divider-content-center bg-body-emphasis">Use Nip</div>
                                     </div>
                                     <form method="POST" action="{{ route('login') }}">
                                         @csrf
 
                                         <div class="mb-3 text-start">
-                                            <label class="form-label" for="email">Email address</label>
+                                            <label class="form-label" for="nip">Nip </label>
                                             <div class="form-icon-container">
-                                                <input class="form-control form-icon-input" id="email" type="email"
-                                                    name="email" />
+                                                <input class="form-control form-icon-input" id="nip" type="text"
+                                                    name="nip" />
                                                 <span class="fas fa-user text-body fs-9 form-icon"></span>
                                             </div>
-                                            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                                            <x-input-error :messages="$errors->get('nip')" class="mt-2" />
                                         </div>
                                         <div class="mb-3 text-start">
                                             <label class="form-label" for="password">Password</label>

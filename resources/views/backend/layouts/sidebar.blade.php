@@ -125,6 +125,7 @@
                     <!-- end pengukuran data -->
                     @endcan
 
+                    @can('perencanaan-list')
                     <!-- perencanaan kinerja -->
                     <div class="nav-item-wrapper">
                         <a class="nav-link dropdown-indicator label-1" href="#nv-perencanaan" role="button"
@@ -169,6 +170,7 @@
                         </div>
                     </div>
                     <!-- end perencanaan kinerja -->
+                    @endcan
 
                     @can('validasi-list')
                     <!-- validasi data -->

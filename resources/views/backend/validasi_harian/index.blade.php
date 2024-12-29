@@ -135,7 +135,7 @@
                                 <tr>
                                     <th class="text-center" width="5%">No</th>
                                     <th class="text-center">Tanggal</th>
-                                    <th class="text-center">Uraian</th>
+                                    <th class="text-center" width="40%">Uraian</th>
                                     <th class="text-center">Output</th>
                                     <th class="text-center">Waktu</th>
                                     <th class="text-center">Evidance</th>
@@ -213,12 +213,12 @@ function editDataHarianByUser(userId) {
             response.forEach((item, index) => {
                 tableBody += `
                     <tr>
-                        <td class="text-center">${index + 1}</td>
-                        <td class="text-center">${new Date(item.tanggal).toLocaleDateString('id-ID')}</td>
-                        <td class="text-center">${item.uraian}</td>
-                        <td class="text-center">${item.output}</td>
-                        <td class="text-center">${item.waktu_mulai} - ${item.waktu_selesai}</td>
-                        <td class="text-center">
+                        <td class="text-center align-middle">${index + 1}</td>
+                        <td class="text-center align-middle">${new Date(item.tanggal).toLocaleDateString('id-ID')}</td>
+                        <td class="text-center align-middle">${item.uraian}</td>
+                        <td class="text-center align-middle">${item.output}</td>
+                        <td class="text-center align-middle">${item.waktu_mulai} - ${item.waktu_selesai}</td>
+                        <td class="text-center align-middle">
                             <a href="storage/${item.evidence}" target="_blank" class="btn btn-link btn-sm">Lihat File</a>
                         </td>
                         <td class="text-center">

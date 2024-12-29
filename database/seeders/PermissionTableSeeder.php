@@ -32,6 +32,7 @@ class PermissionTableSeeder extends Seeder
             'atasan-list',
             'pengukuran-list',
             'validasi-list',
+            'perencanaan-list',
 
         ];
 

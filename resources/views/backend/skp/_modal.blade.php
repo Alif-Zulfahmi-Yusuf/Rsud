@@ -17,7 +17,7 @@
                             @php
                             $currentYear = now()->year;
                             @endphp
-                            @for ($year = $currentYear - 5; $year <= $currentYear + 5; $year++) <option
+                            @for ($year = $currentYear - 5; $year <= $currentYear + 10; $year++) <option
                                 value="{{ $year }}">{{ $year }}</option>
                                 @endfor
                         </select>

@@ -49,7 +49,7 @@ class SkpService
         if (!$skpAtasan) {
             Log::warning('SKP Atasan tidak ditemukan', [
                 'atasan_id' => $atasan->user_id,
-                'year' => $data['year']
+                'tahun' => $data['year']
             ]);
             throw new \Exception('Atasan belum membuat Skp untuk tahun ' . $data['year'] . '.');
         }

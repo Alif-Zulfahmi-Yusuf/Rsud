@@ -46,15 +46,17 @@
                             <div class="form-group">
                                 <strong>Permissions:</strong>
                                 <br />
-                                @foreach($permission as $value)
-                                <div class="form-check">
-                                    <input type="checkbox" name="permission[{{$value->id}}]" value="{{$value->id}}"
-                                        class="form-check-input" id="permission{{$value->id}}"
-                                        {{ in_array($value->id, $rolePermissions) ? 'checked' : '' }}>
-                                    <label class="form-check-label"
-                                        for="permission{{$value->id}}">{{ $value->name }}</label>
+                                <div class="d-flex flex-wrap">
+                                    @foreach($permission as $value)
+                                    <div class="form-check me-3">
+                                        <input type="checkbox" name="permission[{{$value->id}}]" value="{{$value->id}}"
+                                            class="form-check-input" id="permission{{$value->id}}"
+                                            {{ in_array($value->id, $rolePermissions) ? 'checked' : '' }}>
+                                        <label class="form-check-label"
+                                            for="permission{{$value->id}}">{{ $value->name }}</label>
+                                    </div>
+                                    @endforeach
                                 </div>
-                                @endforeach
                             </div>
                         </div>
                         <div class="col-md-12 text-center mt-3">
